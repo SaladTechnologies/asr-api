@@ -21,13 +21,18 @@ cache_dir = os.environ.get("CACHE_DIR", "/data")
 def load_model():
     print(f"Loading model {model_id} on device {device}", flush=True)
     start = time.perf_counter()
+    model_kwargs = {
+        "torch_dtype": torch_dtype,
+        "low_cpu_mem_usage": True,
+        "use_safetensors": True,
+        "cache_dir": cache_dir,
+    }
+    if device == "cuda:0":
+        model_kwargs["use_flash_attention_2"] = True
+
     model = AutoModelForSpeechSeq2Seq.from_pretrained(
         model_id,
-        torch_dtype=torch_dtype,
-        low_cpu_mem_usage=True,
-        use_safetensors=True,
-        use_flash_attention_2=True,
-        cache_dir=cache_dir,
+        **model_kwargs,
     )
     model.to(device)
     processor = AutoProcessor.from_pretrained(model_id, cache_dir=cache_dir)
@@ -40,11 +45,7 @@ def load_model():
     start = time.perf_counter()
     assistant_model = AutoModelForCausalLM.from_pretrained(
         assistant_model_id,
-        torch_dtype=torch_dtype,
-        low_cpu_mem_usage=True,
-        use_safetensors=True,
-        use_flash_attention_2=True,
-        cache_dir=cache_dir,
+        **model_kwargs,
     )
     assistant_model.to(device)
     end = time.perf_counter()
