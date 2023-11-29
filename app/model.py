@@ -11,7 +11,7 @@ import time
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
 
-model_id = os.environ.get("MODEL_ID", "openai/whisper-large-v3")
+model_id = os.environ.get("MODEL_ID", "openai/whisper-large-v2")
 assistant_model_id = os.environ.get(
     "ASSISTANT_MODEL_ID", "distil-whisper/distil-large-v2"
 )
@@ -49,14 +49,6 @@ def load_model():
     assistant_model.to(device)
     end = time.perf_counter()
     print(f"Loaded assistant model in {end - start} seconds", flush=True)
-
-    if device == "cuda:0":
-        print("Converting model to BetterTransformer", flush=True)
-        start = time.perf_counter()
-        model = model.to_bettertransformer()
-        # assistant_model = assistant_model.to_bettertransformer()
-        end = time.perf_counter()
-        print(f"Converted model in {end - start} seconds", flush=True)
 
     pipe = pipeline(
         "automatic-speech-recognition",

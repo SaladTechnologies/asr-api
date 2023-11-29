@@ -20,3 +20,4 @@ services:
     environment:
       CACHE_DIR: /data
       PORT: 8000
+      MODEL_ID: openai/whisper-large-v2

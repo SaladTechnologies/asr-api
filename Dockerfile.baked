@@ -1,0 +1,4 @@
+ARG BASE_TAG=latest
+FROM saladtechnologies/asr-api:${BASE_TAG}
+
+RUN python -c "from model import load_model; load_model()"

@@ -1,0 +1,49 @@
+#! /usr/bin/env bash
+
+set -euo pipefail
+
+# Usage: ./build [--push] [--tag <tag>]
+
+# Figure out if we should use python or python3
+if command -v python3 &>/dev/null; then
+  python_cmd=python3
+else
+  python_cmd=python
+fi
+
+version=$($python_cmd -c "from app.__version__ import version; print(version)")
+echo "Building version $version"
+
+# Parse arguments
+push=false
+tag="latest"
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+  --push)
+    push=true
+    shift
+    ;;
+  --tag)
+    tag="$2"
+    shift 2
+    ;;
+  *)
+    echo "Unknown argument: $1"
+    exit 1
+    ;;
+  esac
+done
+
+docker buildx build \
+  -t saladtechnologies/asr-api:$tag \
+  --platform linux/amd64 \
+  --output type=docker \
+  --provenance false \
+  .
+
+docker tag saladtechnologies/asr-api:$tag saladtechnologies/asr-api:$version
+
+if [ "$push" = true ]; then
+  docker push saladtechnologies/asr-api:$tag
+  docker push saladtechnologies/asr-api:$version
+fi

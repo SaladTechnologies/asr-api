@@ -5,6 +5,7 @@ import uvicorn
 import os
 from typing import Optional
 from model import load_model
+from __version__ import version
 
 host = os.environ.get("HOST", "*")
 port = os.environ.get("PORT", "8000")
@@ -20,7 +21,7 @@ app = FastAPI()
 
 @app.get("/hc")
 async def healthcheck():
-    return {"status": "ok"}
+    return {"status": "ok", "version": version}
 
 
 class ASRRequest(BaseModel):
