@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  asr:
+    image: saladtechnologies/asr-api:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [ gpu ]
+              count: all
+    ports:
+      - 8000:8000
+    volumes:
+      - ./data:/data
+    environment:
+      CACHE_DIR: /data
+      PORT: 8000

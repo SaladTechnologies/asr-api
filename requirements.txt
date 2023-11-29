@@ -1,0 +1,11 @@
+wheel
+ninja
+pydantic
+fastapi
+uvicorn
+packaging
+soundfile
+torchaudio
+transformers @ git+https://github.com/huggingface/transformers.git@v4.35.2
+accelerate @ git+https://github.com/huggingface/accelerate.git@v0.24.1
+optimum @ git+https://github.com/huggingface/optimum.git@v1.14.1
