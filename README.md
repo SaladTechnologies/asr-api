@@ -1,4 +1,5 @@
-# asr-api
+# Automatic Speech Recognition API
+
 A minimalist, performance-oriented inference server for automatic speech recognition. 
 
 More extensive benchmarks will come soon, but for now, here's some prelimary performance numbers. These numbers are for total round-trip request time, including downloading the audio file, and parsing the response. The default configuration is used for all models.
