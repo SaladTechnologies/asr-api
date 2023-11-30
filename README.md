@@ -155,19 +155,33 @@ You can also deploy this API on Salad using the [Salad Portal](https://portal.sa
 Select or Create the organization and project you want to work with, then click the "Deploy a Container Group" button.
 
 1. Give your container group a name that is unique within this organization and project.
+   
 ![Name the container group](images/cg-name.png)
-1. Select the `saladtechnologies/asr-api:latest-distil-whisper-distil-large-v2` image to deploy distil-whisper large v2, using BetterTransformers.
+
+2. Select the `saladtechnologies/asr-api:latest-distil-whisper-distil-large-v2` image to deploy distil-whisper large v2, using BetterTransformers.
+   
 ![Select the correct docker image](images/img-name.png)
-1. Set your replica count. We recommend at least 3 replicas for production use.
+
+3. Set your replica count. We recommend at least 3 replicas for production use.
+   
 ![Choose Replicas](images/replica.png)
-1. Set the CPU to 2, and the memory to 8 GB.
+
+4. Set the CPU to 2, and the memory to 8 GB.
+   
 ![Select CPU and RAM](images/cpu-ram.png)
-1. Set the GPU to 1x RTX 3080 Ti (Or another GPU. We haven't done comprehensive testing on all GPUs, so your mileage may vary).
+
+5. Set the GPU to 1x RTX 3080 Ti (Or another GPU. We haven't done comprehensive testing on all GPUs, so your mileage may vary).
+   
 ![Select GPU](images/gpu.png)
-1. Configure the Startup Probe. This is used to determine when the container is ready to accept requests. Select the HTTP protocol, set the path to `/hc`, and the port to `8000`. Set the initial delay, period, and timeout to `1`. Set the success threshold to `1`, and the failure threshold to `20`. If you are using an image that downloads the model weights at runtime, you should increase intial delay to `10` or more, and a failure threshold of `180` to allow up to 3 minutes for the container to start.
+
+6. Configure the Startup Probe. This is used to determine when the container is ready to accept requests. Select the HTTP protocol, set the path to `/hc`, and the port to `8000`. Set the initial delay, period, and timeout to `1`. Set the success threshold to `1`, and the failure threshold to `20`. If you are using an image that downloads the model weights at runtime, you should increase intial delay to `10` or more, and a failure threshold of `180` to allow up to 3 minutes for the container to start.
 
 ![Configure your startup probe](images/startup-probe.png)
+
 7. Enable networking for port `8000`, and choose authenticated or not authenticated. If you choose authenticated, you will need to provide an API key when making requests.
+
 ![Enable networking](images/networking.png)
-8. Click "Deploy" to deploy your container group.
+
+9. Click "Deploy" to deploy your container group.
+
 ![Hit Deploy](images/deploy.png)
