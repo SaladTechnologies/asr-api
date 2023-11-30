@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-# Usage: ./build [--push] [--model <model>] [--base_tag <base_tag>]
+# Usage: ./build [--push] [--model <model>] [--base-tag <base-tag>]
 
 # Figure out if we should use python or python3
 if command -v python3 &>/dev/null; then
@@ -28,7 +28,7 @@ while [[ $# -gt 0 ]]; do
     model="$2"
     shift 2
     ;;
-  --base_tag)
+  --base-tag)
     base_tag="$2"
     shift 2
     ;;
