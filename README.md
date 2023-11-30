@@ -3,6 +3,19 @@ A minimalist, performance-oriented server for automatic speech recognition
 
 ## API
 
+### GET /hc
+
+This healthcheck will not respond until the server is fully ready to accept requests.
+
+#### Response
+
+```json
+{
+  "status": "ok",
+  "version": "0.0.2",
+}
+```
+
 ### POST /asr
 
 #### Request
