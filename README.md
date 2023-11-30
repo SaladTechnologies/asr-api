@@ -1,10 +1,19 @@
 # asr-api
-A minimalist, performance-oriented inference server for automatic speech recognition. More extensive benchmarks will come soon, but for now, here's some prelimary numbers from my 3080 Ti:
+A minimalist, performance-oriented inference server for automatic speech recognition. More extensive benchmarks will come soon, but for now, here's some prelimary performance numbers:
+
+**RTX 3080 Ti w/ BetterTransformers**
 
 | Model | Input Audio Length | Realtime Multiple |
 | --- | --- | --- |
 | [OpenAI Whisper Large v3](openai/whisper-large-v3) | 19 min 51s | 50x |
 | [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) | 19 min 51s | 78x
+
+**RTX 4090 w/ BetterTransformers**
+
+| Model | Input Audio Length | Realtime Multiple |
+| --- | --- | --- |
+| [OpenAI Whisper Large v3](openai/whisper-large-v3) | 19 min 51s | 68x |
+| [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) | 19 min 51s | 83x
 
 ## API
 
@@ -49,6 +58,10 @@ URL should be a download link to an audio file. Currently only supports mp3, fla
   ]
 }
 ```
+
+### GET /docs
+
+Swagger docs for the API.
 
 ## Configuration
 

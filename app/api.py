@@ -16,7 +16,11 @@ pipe = load_model()
 end = time.perf_counter()
 print(f"Initialized ASR Pipeline in {end - start} seconds", flush=True)
 
-app = FastAPI()
+app = FastAPI(
+    title="Automatic Speech Recognition API",
+    description="A minimalist, performance-oriented inference server for automatic speech recognition.",
+    version=version,
+)
 
 
 @app.get("/hc")
