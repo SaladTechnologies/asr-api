@@ -182,6 +182,6 @@ Select or Create the organization and project you want to work with, then click 
 
 ![Enable networking](images/networking.png)
 
-9. Click "Deploy" to deploy your container group.
+8. Click "Deploy" to deploy your container group.
 
 ![Hit Deploy](images/deploy.png)
