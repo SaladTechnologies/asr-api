@@ -13,10 +13,10 @@ RUN pip install -r requirements.txt --extra-index-url https://download.pytorch.o
 ENV TORCH_CUDA_ARCH_LIST=All
 ENV MAX_JOBS=4
 ENV LD_PRELOAD=libtcmalloc.so
-ARG USE_FLASH_ATTENTION="0"
-ENV FLASH_ATTENTION_2=${USE_FLASH_ATTENTION}
-RUN if [[ "${USE_FLASH_ATTENTION}" = "1" ]]; \
-  then pip install git+https://github.com/Dao-AILab/flash-attention.git@v2.3.6 --no-build-isolation; \
+ARG FLASH_ATTENTION_2="0"
+ENV FLASH_ATTENTION_2=${FLASH_ATTENTION_2}
+RUN if [[ "${FLASH_ATTENTION_2}" = "1" ]]; then \
+  pip install git+https://github.com/Dao-AILab/flash-attention.git@v2.3.6 --no-build-isolation; \
   fi
 
 COPY app/ .
