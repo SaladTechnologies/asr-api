@@ -23,6 +23,7 @@ More extensive benchmarks will come soon, but for now, here's some prelimary per
 | Model | Input Audio Length | Realtime Multiple |
 | --- | --- | --- |
 | [OpenAI Whisper Large v3](openai/whisper-large-v3) | 19 min 51s | 63x |
+| [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) | 19 min 51s | 93x
 
 ## API
 
