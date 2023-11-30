@@ -18,6 +18,6 @@ services:
     volumes:
       - ./data:/data
     environment:
-      CACHE_DIR: /data
       PORT: 8000
-      MODEL_ID: openai/whisper-large-v2
+      CACHE_DIR: /data
+      MODEL_ID: distil-whisper/distil-large-v2

@@ -1,21 +1,32 @@
 from transformers import (
     AutoModelForSpeechSeq2Seq,
     AutoProcessor,
-    AutoModelForCausalLM,
     pipeline,
 )
 import torch
 import os
 import time
 
-device = "cuda:0" if torch.cuda.is_available() else "cpu"
-torch_dtype = torch.float16 if torch.cuda.is_available() else torch.float32
+use_flash_attention_2 = False
+flash_attention_user_override = os.environ.get("FLASH_ATTENTION_2", "") == "1"
+if torch.cuda.is_available():
+    device = "cuda:0"
+    torch_dtype = torch.float16
+    device_properties = torch.cuda.get_device_properties(0)
+    compute_capability = float(f"{device_properties.major}.{device_properties.minor}")
+    print(f"GPU Compute Capability: {compute_capability}", flush=True)
+    if compute_capability >= 8.9:
+        use_flash_attention_2 = flash_attention_user_override and True
+else:
+    device = "cpu"
+    torch_dtype = torch.float32
 
-model_id = os.environ.get("MODEL_ID", "openai/whisper-large-v2")
-assistant_model_id = os.environ.get(
-    "ASSISTANT_MODEL_ID", "distil-whisper/distil-large-v2"
-)
+model_id = os.environ.get("MODEL_ID", "openai/whisper-large-v3")
 cache_dir = os.environ.get("CACHE_DIR", "/data")
+batch_size = int(os.environ.get("BATCH_SIZE", "16"))
+max_new_tokens = int(os.environ.get("MAX_NEW_TOKENS", "128"))
+chunk_length_s = int(os.environ.get("CHUNK_LENGTH_S", "30"))
+stride_length_s = int(os.environ.get("STRIDE_LENGTH_S", chunk_length_s / 6))
 
 
 def load_model():
@@ -27,7 +38,7 @@ def load_model():
         "use_safetensors": True,
         "cache_dir": cache_dir,
     }
-    if device == "cuda:0":
+    if use_flash_attention_2:
         model_kwargs["use_flash_attention_2"] = True
 
     model = AutoModelForSpeechSeq2Seq.from_pretrained(
@@ -35,29 +46,24 @@ def load_model():
         **model_kwargs,
     )
     model.to(device)
+
+    if device == "cuda:0" and not use_flash_attention_2:
+        model = model.to_bettertransformer()
+
     processor = AutoProcessor.from_pretrained(model_id, cache_dir=cache_dir)
     end = time.perf_counter()
     print(f"Loaded model in {end - start} seconds", flush=True)
-
-    print(
-        f"Loading assistant model {assistant_model_id} on device {device}", flush=True
-    )
-    start = time.perf_counter()
-    assistant_model = AutoModelForCausalLM.from_pretrained(
-        assistant_model_id,
-        **model_kwargs,
-    )
-    assistant_model.to(device)
-    end = time.perf_counter()
-    print(f"Loaded assistant model in {end - start} seconds", flush=True)
 
     pipe = pipeline(
         "automatic-speech-recognition",
         model=model,
         tokenizer=processor.tokenizer,
         feature_extractor=processor.feature_extractor,
-        chunk_length_s=30,
-        generate_kwargs={"assistant_model": assistant_model},
+        chunk_length_s=chunk_length_s,
+        stride_length_s=stride_length_s,
+        max_new_tokens=max_new_tokens,
+        batch_size=batch_size,
+        return_timestamps=True,
         torch_dtype=torch_dtype,
         device=device,
     )

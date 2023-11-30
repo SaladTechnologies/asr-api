@@ -38,6 +38,7 @@ async def asr(request: ASRRequest, response: Response):
         return {"error": str(e)}
     end = time.perf_counter()
     print(f"Processed ASR request in {end - start} seconds", flush=True)
+    response.headers["X-Processing-Time"] = str(end - start)
     return result
 
 

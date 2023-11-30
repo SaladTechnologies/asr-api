@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-# Usage: ./build [--push] [--tag <tag>]
+# Usage: ./build [--push] [--tag <tag>] [--flash-attention-2]
 
 # Figure out if we should use python or python3
 if command -v python3 &>/dev/null; then
@@ -17,6 +17,7 @@ echo "Building version $version"
 # Parse arguments
 push=false
 tag="latest"
+flash_attention_2=false
 while [[ $# -gt 0 ]]; do
   case "$1" in
   --push)
@@ -27,6 +28,10 @@ while [[ $# -gt 0 ]]; do
     tag="$2"
     shift 2
     ;;
+  --flash-attention-2)
+    flash_attention_2=true
+    shift
+    ;;
   *)
     echo "Unknown argument: $1"
     exit 1
@@ -34,11 +39,23 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
+base_tag="2.1.1-cuda12.1-cudnn8-runtime"
+fa_arg="0"
+if [ "$flash_attention_2" = true ]; then
+  base_tag="2.1.1-cuda12.1-cudnn8-devel"
+  tag="$tag-fa2"
+  version="$version-fa2"
+  fa_arg="1"
+fi
+
 docker buildx build \
   -t saladtechnologies/asr-api:$tag \
   --platform linux/amd64 \
   --output type=docker \
   --provenance false \
+  -f Dockerfile \
+  --build-arg BASE_TAG=$base_tag \
+  --build-arg FLASH_ATTENTION_2=$fa_arg \
   .
 
 docker tag saladtechnologies/asr-api:$tag saladtechnologies/asr-api:$version

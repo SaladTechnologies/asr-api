@@ -1,4 +1,7 @@
 ARG BASE_TAG=latest
 FROM saladtechnologies/asr-api:${BASE_TAG}
 
+ARG MODEL_ID="openai/whisper-large-v3"
+ENV MODEL_ID=${MODEL_ID}
+
 RUN python -c "from model import load_model; load_model()"
