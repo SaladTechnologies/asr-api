@@ -39,7 +39,12 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-tag=$(echo "$model" | tr '/' '-' | tr '[:upper:]' '[:lower:]')
+model_tag=$(echo "$model" | tr '/' '-' | tr '[:upper:]' '[:lower:]')
+tag=$base_tag-$model_tag
+
+if [[ "$base_tag" == *"fa2" ]]; then
+  version="$version-fa2"
+fi
 
 docker buildx build \
   -t saladtechnologies/asr-api:$tag \
@@ -51,9 +56,11 @@ docker buildx build \
   --build-arg MODEL_ID=$model \
   .
 
-docker tag saladtechnologies/asr-api:$tag saladtechnologies/asr-api:$version-$tag
+docker tag saladtechnologies/asr-api:$tag saladtechnologies/asr-api:$version-$model_tag
 
 if [ "$push" = true ]; then
+  echo "Pushing saladtechnologies/asr-api:$tag"
   docker push saladtechnologies/asr-api:$tag
-  docker push saladtechnologies/asr-api:$version-$tag
+  echo "Pushing saladtechnologies/asr-api:$version-$model_tag"
+  docker push saladtechnologies/asr-api:$version-$model_tag
 fi
