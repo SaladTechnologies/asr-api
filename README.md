@@ -1,5 +1,5 @@
 # asr-api
-A minimalist, performance-oriented server for automatic speech recognition
+A minimalist, performance-oriented inference server for automatic speech recognition
 
 ## API
 
@@ -19,6 +19,8 @@ This healthcheck will not respond until the server is fully ready to accept requ
 ### POST /asr
 
 #### Request
+
+URL should be a download link to an audio file. Currently only supports mp3, flac, and wav.
 
 ```json
 {
