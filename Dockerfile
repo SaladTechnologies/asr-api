@@ -15,7 +15,10 @@ ENV MAX_JOBS=4
 ENV LD_PRELOAD=libtcmalloc.so
 ARG FLASH_ATTENTION_2="0"
 ENV FLASH_ATTENTION_2=${FLASH_ATTENTION_2}
-RUN if [[ "${FLASH_ATTENTION_2}" = "1" ]]; then \
+SHELL ["/bin/bash", "-c"]
+RUN echo "FLASH_ATTENTION_2 is ${FLASH_ATTENTION_2}" && \
+  if [ "${FLASH_ATTENTION_2}" == "1" ]; then \
+  echo "Installing flash-attention" && \
   pip install git+https://github.com/Dao-AILab/flash-attention.git@v2.3.6 --no-build-isolation; \
   fi
 

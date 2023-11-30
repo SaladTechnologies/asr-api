@@ -86,9 +86,87 @@ See documentation for the [ASR Pipeline](https://huggingface.co/docs/transformer
 
 ## Docker Images
 
+> Note: The `-fa2` images are larger, and require a GPU with compute capability >= 8.9. If your GPU does not support this, use the non `-fa2` images.
+
 - `saladtechnologies/asr-api:latest`, `saladtechnologies/asr-api:0.0.2` - The base image, no models included. Does not support flash attention 2, but is a smaller base image. Will download the model at runtime.
 - `saladtechnologies/asr-api:latest-fa2` ,`saladtechnologies/asr-api:0.0.2-fa2` - The base image, no models included. Supports flash attention 2, but is a larger base image. Will download the model at runtime.
 - `saladtechnologies/asr-api:latest-openai-whisper-large-v3`, `saladtechnologies/asr-api:0.0.2-openai-whisper-large-v3` - The base image, with the [OpenAI Whisper Large v3](openai/whisper-large-v3) model included. Does not support flash attention 2.
 - `saladtechnologies/asr-api:latest-fa2-openai-whisper-large-v3`, `saladtechnologies/asr-api:0.0.2-fa2-openai-whisper-large-v3` - The base image, with the [OpenAI Whisper Large v3](openai/whisper-large-v3) model included. Supports flash attention 2.
 - `saladtechnologies/asr-api:latest-distil-whisper-distil-large-v2`, `saladtechnologies/asr-api:0.0.2-distil-whisper-distil-large-v2` - The base image, with the [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) model included. Does not support flash attention 2.
 - `saladtechnologies/asr-api:latest-fa2-distil-whisper-distil-large-v2`, `saladtechnologies/asr-api:0.0.2-fa2-distil-whisper-distil-large-v2` - The base image, with the [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) model included. Supports flash attention 2.
+
+## Deploying On Salad
+
+### Deploying with the API
+
+You can deploy this API on Salad using the following command:
+> See [API Docs](https://docs.salad.com/reference/create_container_group) for more information.
+
+```bash
+organization_name="my-org"
+project_name="my-project"
+salad_api_key="my-api-key"
+curl -X POST \
+  --url https://api.salad.com/api/public/organizations/${organization_name}/projects/${project_name}/containers \
+  --header "Salad-Api-Key: ${salad_api_key}" \
+  --data '
+{
+  "name": "asr-api-distil-whisper-lg-v2",
+  "display_name": "asr-api-distil-whisper-lg-v2",
+  "container": {
+    "image": "saladtechnologies/asr-api:latest-distil-whisper-distil-large-v2",
+    "resources": {
+      "cpu": 2,
+      "memory": 8192,
+      "gpu_classes": [
+        "65247de0-746f-45c6-8537-650ba613966a"
+      ]
+    },
+    "command": [],
+  },
+  "autostart_policy": true,
+  "restart_policy": "always",
+  "replicas": 3,
+  "networking": {
+    "protocol": "http",
+    "port": 8000,
+    "auth": false
+  },
+  "startup_probe": {
+    "http": {
+      "path": "/hc",
+      "port": 8000,
+      "scheme": "http",
+      "headers": []
+    },
+    "initial_delay_seconds": 1,
+    "period_seconds": 1,
+    "timeout_seconds": 1,
+    "success_threshold": 1,
+    "failure_threshold": 20
+  }
+}'
+```
+
+### Deploying With The Portal
+
+You can also deploy this API on Salad using the [Salad Portal](https://portal.salad.com/).
+
+Select or Create the organization and project you want to work with, then click the "Deploy a Container Group" button.
+
+1. Give your container group a name that is unique within this organization and project.
+![Name the container group](images/cg-name.png)
+1. Select the `saladtechnologies/asr-api:latest-distil-whisper-distil-large-v2` image to deploy distil-whisper large v2, using BetterTransformers.
+![Select the correct docker image](images/img-name.png)
+1. Set your replica count. We recommend at least 3 replicas for production use.
+![Choose Replicas](images/replica.png)
+1. Set the CPU to 2, and the memory to 8 GB.
+![Select CPU and RAM](images/cpu-ram.png)
+1. Set the GPU to 1x RTX 3080 Ti (Or another GPU. We haven't done comprehensive testing on all GPUs, so your mileage may vary).
+![Select GPU](images/gpu.png)
+1. Configure the Startup Probe. This is used to determine when the container is ready to accept requests. Select the HTTP protocol, set the path to `/hc`, and the port to `8000`. Set the initial delay, period, and timeout to `1`. Set the success threshold to `1`, and the failure threshold to `20`. If you are using an image that downloads the model weights at runtime, you should increase intial delay to `10` or more, and a failure threshold of `180` to allow up to 3 minutes for the container to start.
+![Configure your startup probe](images/startup-probe.png)
+1. Enable networking for port `8000`, and choose authenticated or not authenticated. If you choose authenticated, you will need to provide an API key when making requests.
+![Enable networking](images/networking.png)
+1. Click "Deploy" to deploy your container group.
+![Hit Deploy](images/deploy.png)
