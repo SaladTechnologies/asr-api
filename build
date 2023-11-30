@@ -61,6 +61,8 @@ docker buildx build \
 docker tag saladtechnologies/asr-api:$tag saladtechnologies/asr-api:$version
 
 if [ "$push" = true ]; then
+  echo "Pushing saladtechnologies/asr-api:$tag"
   docker push saladtechnologies/asr-api:$tag
+  echo "Pushing saladtechnologies/asr-api:$version"
   docker push saladtechnologies/asr-api:$version
 fi
