@@ -1,0 +1,15 @@
+#! /usr/bin/env bash
+
+push=$1
+
+models="openai/whisper-large-v3 distil-whisper/distil-large-v2"
+base_tags="latest latest-f2"
+
+./build $push
+./build --flash-attention-2 $push
+
+for model in $models; do
+  for base_tag in $base_tags; do
+    ./build-baked --model $model --base-tag $base_tag $push
+  done
+done

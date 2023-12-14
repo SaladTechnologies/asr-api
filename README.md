@@ -6,24 +6,24 @@ More extensive benchmarks will come soon, but for now, here's some prelimary per
 
 **RTX 3080 Ti w/ BetterTransformers**
 
-| Model | Input Audio Length | Realtime Multiple |
-| --- | --- | --- |
-| [OpenAI Whisper Large v3](openai/whisper-large-v3) | 19 min 51s | 50x |
-| [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) | 19 min 51s | 78x
+| Model                                                                                   | Input Audio Length | Realtime Multiple |
+| --------------------------------------------------------------------------------------- | ------------------ | ----------------- |
+| [OpenAI Whisper Large v3](openai/whisper-large-v3)                                      | 19 min 51s         | 50x               |
+| [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) | 19 min 51s         | 78x               |
 
 **RTX 4090 w/ BetterTransformers**
 
-| Model | Input Audio Length | Realtime Multiple |
-| --- | --- | --- |
-| [OpenAI Whisper Large v3](openai/whisper-large-v3) | 19 min 51s | 68x |
-| [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) | 19 min 51s | 83x
+| Model                                                                                   | Input Audio Length | Realtime Multiple |
+| --------------------------------------------------------------------------------------- | ------------------ | ----------------- |
+| [OpenAI Whisper Large v3](openai/whisper-large-v3)                                      | 19 min 51s         | 68x               |
+| [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) | 19 min 51s         | 83x               |
 
 **RTX 4090 w/ Flash Attention 2**
 
-| Model | Input Audio Length | Realtime Multiple |
-| --- | --- | --- |
-| [OpenAI Whisper Large v3](openai/whisper-large-v3) | 19 min 51s | 63x |
-| [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) | 19 min 51s | 93x
+| Model                                                                                   | Input Audio Length | Realtime Multiple |
+| --------------------------------------------------------------------------------------- | ------------------ | ----------------- |
+| [OpenAI Whisper Large v3](openai/whisper-large-v3)                                      | 19 min 51s         | 63x               |
+| [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) | 19 min 51s         | 93x               |
 
 ## API
 
@@ -36,13 +36,13 @@ This healthcheck will not respond until the server is fully ready to accept requ
 ```json
 {
   "status": "ok",
-  "version": "0.0.2",
+  "version": "0.0.3",
 }
 ```
 
 ### POST /asr
 
-#### Request
+#### Request - JSON
 
 URL should be a download link to an audio file. Currently only supports mp3, flac, and wav.
 
@@ -51,6 +51,10 @@ URL should be a download link to an audio file. Currently only supports mp3, fla
   "url": "https://example.com/audio.mp3",
 }
 ```
+
+#### Request - Upload
+
+You can also upload an audio file directly. Use the raw bytes of the file as the request body.
 
 #### Response
 
@@ -79,29 +83,29 @@ All configuration is via environment variables.
 
 See documentation for the [ASR Pipeline](https://huggingface.co/docs/transformers/main/en/main_classes/pipelines#transformers.AutomaticSpeechRecognitionPipeline) for more information on the model configuration options:
 
-| Name | Description | Default |
-| --- | --- | --- |
-| `HOST` | The host to listen on | `*` |
-| `PORT` | The port to listen on | `8000` |
-| `MODEL_ID` | The model to use. See [Automatic Speech Recognition Models](https://huggingface.co/models?pipeline_tag=automatic-speech-recognition&sort=trending) | `openai/whisper-large-v3` |
-| `CACHE_DIR` | The directory to cache models in | `/data` |
-| `FLASH_ATTENTION_2` | Whether to use flash attention 2. Must be `1` to enable. Enabled by default in `-fa2` images. Note, if your GPU does not support compute capability >= 8.9, BetterTransformers will be used instead.  | **None** |
-| `BATCH_SIZE` | The batch size to use. | `16` |
-| `MAX_NEW_TOKENS` | Not sure what this does. | `128` |
-| `CHUNK_LENGTH_S` | The length of each chunk in seconds. | `30` |
-| `STRIDE_LENGTH_S` | The stride length in seconds. Defaults to 1/6 of `CHUNK_LENGTH_S` | `CHUNK_LENGTH_S` / 6 |
+| Name                | Description                                                                                                                                                                                          | Default                   |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| `HOST`              | The host to listen on                                                                                                                                                                                | `*`                       |
+| `PORT`              | The port to listen on                                                                                                                                                                                | `8000`                    |
+| `MODEL_ID`          | The model to use. See [Automatic Speech Recognition Models](https://huggingface.co/models?pipeline_tag=automatic-speech-recognition&sort=trending)                                                   | `openai/whisper-large-v3` |
+| `CACHE_DIR`         | The directory to cache models in                                                                                                                                                                     | `/data`                   |
+| `FLASH_ATTENTION_2` | Whether to use flash attention 2. Must be `1` to enable. Enabled by default in `-fa2` images. Note, if your GPU does not support compute capability >= 8.9, BetterTransformers will be used instead. | **None**                  |
+| `BATCH_SIZE`        | The batch size to use.                                                                                                                                                                               | `16`                      |
+| `MAX_NEW_TOKENS`    | Not sure what this does.                                                                                                                                                                             | `128`                     |
+| `CHUNK_LENGTH_S`    | The length of each chunk in seconds.                                                                                                                                                                 | `30`                      |
+| `STRIDE_LENGTH_S`   | The stride length in seconds. Defaults to 1/6 of `CHUNK_LENGTH_S`                                                                                                                                    | `CHUNK_LENGTH_S` / 6      |
 
 
 ## Docker Images
 
 > Note: The `-fa2` images are larger, and require a GPU with compute capability >= 8.9. If your GPU does not support this, use the non `-fa2` images.
 
-- `saladtechnologies/asr-api:latest`, `saladtechnologies/asr-api:0.0.2` - The base image, no models included. Does not support flash attention 2, but is a smaller base image. Will download the model at runtime.
-- `saladtechnologies/asr-api:latest-fa2` ,`saladtechnologies/asr-api:0.0.2-fa2` - The base image, no models included. Supports flash attention 2, but is a larger base image. Will download the model at runtime.
-- `saladtechnologies/asr-api:latest-openai-whisper-large-v3`, `saladtechnologies/asr-api:0.0.2-openai-whisper-large-v3` - The base image, with the [OpenAI Whisper Large v3](openai/whisper-large-v3) model included. Does not support flash attention 2.
-- `saladtechnologies/asr-api:latest-fa2-openai-whisper-large-v3`, `saladtechnologies/asr-api:0.0.2-fa2-openai-whisper-large-v3` - The base image, with the [OpenAI Whisper Large v3](openai/whisper-large-v3) model included. Supports flash attention 2.
-- `saladtechnologies/asr-api:latest-distil-whisper-distil-large-v2`, `saladtechnologies/asr-api:0.0.2-distil-whisper-distil-large-v2` - The base image, with the [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) model included. Does not support flash attention 2.
-- `saladtechnologies/asr-api:latest-fa2-distil-whisper-distil-large-v2`, `saladtechnologies/asr-api:0.0.2-fa2-distil-whisper-distil-large-v2` - The base image, with the [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) model included. Supports flash attention 2.
+- `saladtechnologies/asr-api:latest`, `saladtechnologies/asr-api:0.0.3` - The base image, no models included. Does not support flash attention 2, but is a smaller base image. Will download the model at runtime.
+- `saladtechnologies/asr-api:latest-fa2` ,`saladtechnologies/asr-api:0.0.3-fa2` - The base image, no models included. Supports flash attention 2, but is a larger base image. Will download the model at runtime.
+- `saladtechnologies/asr-api:latest-openai-whisper-large-v3`, `saladtechnologies/asr-api:0.0.3-openai-whisper-large-v3` - The base image, with the [OpenAI Whisper Large v3](openai/whisper-large-v3) model included. Does not support flash attention 2.
+- `saladtechnologies/asr-api:latest-fa2-openai-whisper-large-v3`, `saladtechnologies/asr-api:0.0.3-fa2-openai-whisper-large-v3` - The base image, with the [OpenAI Whisper Large v3](openai/whisper-large-v3) model included. Supports flash attention 2.
+- `saladtechnologies/asr-api:latest-distil-whisper-distil-large-v2`, `saladtechnologies/asr-api:0.0.3-distil-whisper-distil-large-v2` - The base image, with the [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) model included. Does not support flash attention 2.
+- `saladtechnologies/asr-api:latest-fa2-distil-whisper-distil-large-v2`, `saladtechnologies/asr-api:0.0.3-fa2-distil-whisper-distil-large-v2` - The base image, with the [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) model included. Supports flash attention 2.
 
 ## Deploying On Salad
 
