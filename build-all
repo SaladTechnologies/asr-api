@@ -3,7 +3,7 @@
 push=$1
 
 models="openai/whisper-large-v3 distil-whisper/distil-large-v2"
-base_tags="latest latest-f2"
+base_tags="latest latest-fa2"
 
 ./build $push
 ./build --flash-attention-2 $push
