@@ -44,7 +44,7 @@ This healthcheck will not respond until the server is fully ready to accept requ
 
 #### Request - JSON
 
-URL should be a download link to an audio file. Currently only supports mp3, flac, and wav.
+URL should be a download link to an audio file. Currently only supports mp3, flac, and wav. It can also be a local filepath, if the server is running on the same machine as the file.
 
 ```json
 {
