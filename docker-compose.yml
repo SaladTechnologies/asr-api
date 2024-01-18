@@ -20,4 +20,4 @@ services:
     environment:
       PORT: 8000
       CACHE_DIR: /data
-      MODEL_ID: distil-whisper/distil-large-v2
+      MODEL_ID: openai/whisper-large-v3

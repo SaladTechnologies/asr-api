@@ -36,7 +36,7 @@ This healthcheck will not respond until the server is fully ready to accept requ
 ```json
 {
   "status": "ok",
-  "version": "0.0.4",
+  "version": "0.0.5",
 }
 ```
 
@@ -100,12 +100,12 @@ See documentation for the [ASR Pipeline](https://huggingface.co/docs/transformer
 
 > Note: The `-fa2` images are larger, and require a GPU with compute capability >= 8.9. If your GPU does not support this, use the non `-fa2` images.
 
-- `saladtechnologies/asr-api:latest`, `saladtechnologies/asr-api:0.0.4` - The base image, no models included. Does not support flash attention 2, but is a smaller base image. Will download the model at runtime.
-- `saladtechnologies/asr-api:latest-fa2` ,`saladtechnologies/asr-api:0.0.4-fa2` - The base image, no models included. Supports flash attention 2, but is a larger base image. Will download the model at runtime.
-- `saladtechnologies/asr-api:latest-openai-whisper-large-v3`, `saladtechnologies/asr-api:0.0.4-openai-whisper-large-v3` - The base image, with the [OpenAI Whisper Large v3](openai/whisper-large-v3) model included. Does not support flash attention 2.
-- `saladtechnologies/asr-api:latest-fa2-openai-whisper-large-v3`, `saladtechnologies/asr-api:0.0.4-fa2-openai-whisper-large-v3` - The base image, with the [OpenAI Whisper Large v3](openai/whisper-large-v3) model included. Supports flash attention 2.
-- `saladtechnologies/asr-api:latest-distil-whisper-distil-large-v2`, `saladtechnologies/asr-api:0.0.4-distil-whisper-distil-large-v2` - The base image, with the [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) model included. Does not support flash attention 2.
-- `saladtechnologies/asr-api:latest-fa2-distil-whisper-distil-large-v2`, `saladtechnologies/asr-api:0.0.4-fa2-distil-whisper-distil-large-v2` - The base image, with the [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) model included. Supports flash attention 2.
+- `saladtechnologies/asr-api:latest`, `saladtechnologies/asr-api:0.0.5` - The base image, no models included. Does not support flash attention 2, but is a smaller base image. Will download the model at runtime.
+- `saladtechnologies/asr-api:latest-fa2` ,`saladtechnologies/asr-api:0.0.5-fa2` - The base image, no models included. Supports flash attention 2, but is a larger base image. Will download the model at runtime.
+- `saladtechnologies/asr-api:latest-openai-whisper-large-v3`, `saladtechnologies/asr-api:0.0.5-openai-whisper-large-v3` - The base image, with the [OpenAI Whisper Large v3](openai/whisper-large-v3) model included. Does not support flash attention 2.
+- `saladtechnologies/asr-api:latest-fa2-openai-whisper-large-v3`, `saladtechnologies/asr-api:0.0.5-fa2-openai-whisper-large-v3` - The base image, with the [OpenAI Whisper Large v3](openai/whisper-large-v3) model included. Supports flash attention 2.
+- `saladtechnologies/asr-api:latest-distil-whisper-distil-large-v2`, `saladtechnologies/asr-api:0.0.5-distil-whisper-distil-large-v2` - The base image, with the [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) model included. Does not support flash attention 2.
+- `saladtechnologies/asr-api:latest-fa2-distil-whisper-distil-large-v2`, `saladtechnologies/asr-api:0.0.5-fa2-distil-whisper-distil-large-v2` - The base image, with the [Distil Whisper Distil Large v2](https://huggingface.co/distil-whisper/distil-large-v2) model included. Supports flash attention 2.
 
 ## Deploying On Salad
 

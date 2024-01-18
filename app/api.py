@@ -80,7 +80,7 @@ async def asr(request: Request, response: Response):
         return {"error": str(e)}
     end = time.perf_counter()
     print(f"Processed ASR request in {end - start} seconds", flush=True)
-    audio_len = result["chunks"][-1]["timestamp"][-1]
+    audio_len = [ts for ts in result["chunks"][-1]["timestamp"] if ts is not None][-1]
     response.headers.update(default_response_headers)
     response.headers["X-Processing-Time"] = str(end - start)
     response.headers["X-Audio-Length"] = str(audio_len)
