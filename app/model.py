@@ -29,7 +29,7 @@ chunk_length_s = int(os.environ.get("CHUNK_LENGTH_S", "30"))
 stride_length_s = int(os.environ.get("STRIDE_LENGTH_S", chunk_length_s / 6))
 
 
-def load_model():
+def load_model(warmup: bool = False):
     print(f"Loading model {model_id} on device {device}", flush=True)
     start = time.perf_counter()
     model_kwargs = {
@@ -46,9 +46,6 @@ def load_model():
         **model_kwargs,
     )
     model.to(device)
-
-    if device == "cuda:0" and not use_flash_attention_2:
-        model = model.to_bettertransformer()
 
     processor = AutoProcessor.from_pretrained(model_id, cache_dir=cache_dir)
     end = time.perf_counter()
@@ -67,5 +64,15 @@ def load_model():
         torch_dtype=torch_dtype,
         device=device,
     )
+
+    if not warmup:
+        return pipe
+    print("Warming up model...", flush=True)
+    start = time.perf_counter()
+    pipe(
+        "https://salad-benchmark-assets.download/cv-corpus-15.0-2023-09-08/en/clips/common_voice_en_1.mp3"
+    )
+    end = time.perf_counter()
+    print(f"Warmed up model in {end - start} seconds", flush=True)
 
     return pipe

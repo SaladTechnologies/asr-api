@@ -4,19 +4,38 @@ from fastapi import FastAPI, Response, Request
 import uvicorn
 import os
 from typing import Optional
-from model import load_model
+from model import load_model, model_id
 from io import BytesIO
+import torch
 from __version__ import version
 import logging
 
 host = os.environ.get("HOST", "*")
-port = os.environ.get("PORT", "8000")
-port = int(port)
+port = int(os.environ.get("PORT", "8000"))
+salad_machine_id = os.getenv("SALAD_MACHINE_ID", "")
+salad_container_group_id = os.getenv("SALAD_CONTAINER_GROUP_ID", "")
 
 start = time.perf_counter()
-pipe = load_model()
+pipe = load_model(True)
 end = time.perf_counter()
 print(f"Initialized ASR Pipeline in {end - start} seconds", flush=True)
+
+
+def get_gpu_name():
+    if torch.cuda.is_available():
+        return torch.cuda.get_device_name(0)
+    else:
+        return "CUDA is not available"
+
+
+gpu_name = get_gpu_name()
+
+default_response_headers = {
+    "X-Salad-Machine-ID": salad_machine_id,
+    "X-Salad-Container-Group-ID": salad_container_group_id,
+    "X-GPU-Name": gpu_name,
+    "X-Model-ID": model_id,
+}
 
 app = FastAPI(
     title="Automatic Speech Recognition API",
@@ -61,7 +80,11 @@ async def asr(request: Request, response: Response):
         return {"error": str(e)}
     end = time.perf_counter()
     print(f"Processed ASR request in {end - start} seconds", flush=True)
+    audio_len = result["chunks"][-1]["timestamp"][-1]
+    response.headers.update(default_response_headers)
     response.headers["X-Processing-Time"] = str(end - start)
+    response.headers["X-Audio-Length"] = str(audio_len)
+    response.headers["X-Realtime-Factor"] = str(audio_len / (end - start))
     return result
 
 

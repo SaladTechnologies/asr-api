@@ -6,6 +6,6 @@ uvicorn
 packaging
 soundfile
 torchaudio
-transformers @ git+https://github.com/huggingface/transformers.git@v4.35.2
-accelerate @ git+https://github.com/huggingface/accelerate.git@v0.24.1
-optimum @ git+https://github.com/huggingface/optimum.git@v1.14.1
+transformers @ git+https://github.com/huggingface/transformers.git@v4.36.2
+accelerate @ git+https://github.com/huggingface/accelerate.git@v0.26.1
+optimum @ git+https://github.com/huggingface/optimum.git@v1.16.1

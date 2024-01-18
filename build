@@ -39,10 +39,10 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-base_tag="2.1.1-cuda12.1-cudnn8-runtime"
+base_tag="2.1.2-cuda12.1-cudnn8-runtime"
 fa_arg="0"
 if [ "$flash_attention_2" = true ]; then
-  base_tag="2.1.1-cuda12.1-cudnn8-devel"
+  base_tag="2.1.2-cuda12.1-cudnn8-devel"
   tag="$tag-fa2"
   version="$version-fa2"
   fa_arg="1"
