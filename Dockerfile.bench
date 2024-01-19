@@ -1,0 +1,8 @@
+ARG BASE_TAG=latest
+FROM saladtechnologies/asr-api:${BASE_TAG}
+
+RUN apt-get install -y wget
+
+COPY ./bench .
+
+CMD bash -c "python api.py & python benchmark.py"

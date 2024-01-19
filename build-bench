@@ -1,0 +1,60 @@
+#! /usr/bin/env bash
+
+set -euo pipefail
+
+# Usage: ./build [--push] [--base-tag <base-tag>]
+
+# Figure out if we should use python or python3
+if command -v python3 &>/dev/null; then
+  python_cmd=python3
+else
+  python_cmd=python
+fi
+
+version=$($python_cmd -c "from app.__version__ import version; print(version)")
+echo "Building version $version"
+
+# Parse arguments
+push=false
+# model="openai/whisper-large-v3"
+base_tag="latest"
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+  --push)
+    push=true
+    shift
+    ;;
+  --base-tag)
+    base_tag="$2"
+    shift 2
+    ;;
+  *)
+    echo "Unknown argument: $1"
+    exit 1
+    ;;
+  esac
+done
+
+tag=$base_tag-bench
+
+if [[ "$base_tag" == *"fa2" ]]; then
+  version="$version-fa2"
+fi
+
+docker buildx build \
+  -t saladtechnologies/asr-api:$tag \
+  --platform linux/amd64 \
+  --output type=docker \
+  --provenance false \
+  -f Dockerfile.bench \
+  --build-arg BASE_TAG=$base_tag \
+  .
+
+# docker tag saladtechnologies/asr-api:$tag saladtechnologies/asr-api:$version-$tag
+
+if [ "$push" = true ]; then
+  echo "Pushing saladtechnologies/asr-api:$tag"
+  docker push saladtechnologies/asr-api:$tag
+  # echo "Pushing saladtechnologies/asr-api:$version-$model_tag"
+  # docker push saladtechnologies/asr-api:$version-$model_tag
+fi

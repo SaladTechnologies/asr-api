@@ -2,10 +2,10 @@ version: '3'
 
 services:
   asr:
-    image: saladtechnologies/asr-api:latest
+    image: saladtechnologies/asr-api:latest-bench
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.bench
     deploy:
       resources:
         reservations:
@@ -21,3 +21,7 @@ services:
       PORT: 8000
       CACHE_DIR: /data
       MODEL_ID: openai/whisper-large-v3
+      BENCHMARK_ID: "asr-benchmark-test2"
+      REPORTING_API_URL: ${REPORTING_API_URL}
+      REPORTING_AUTH_HEADER: ${REPORTING_AUTH_HEADER}
+      REPORTING_API_KEY: ${REPORTING_API_KEY}
