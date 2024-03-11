@@ -56,6 +56,22 @@ URL should be a download link to an audio file. Currently supports mp3, flac, wa
 
 You can also upload an audio file directly. Use the raw bytes of the file as the request body.
 
+**Python**
+
+```python
+with open(file_path, 'rb') as f:
+    # Make the POST request, uploading the file's bytes directly
+    response = requests.post(base_url + "/asr", data=f).json()
+```
+
+**CURL**
+
+```shell
+curl -X POST http://example.com/asr \
+--data-binary @/path/to/your/audiofile.mp3 \
+-H "Content-Type: application/octet-stream"
+```
+
 #### Response
 
 ```json
