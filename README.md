@@ -2,7 +2,11 @@
 
 A minimalist, performance-oriented inference server for automatic speech recognition. 
 
-More extensive benchmarks will come soon, but for now, here's some prelimary performance numbers. These numbers are for total round-trip request time, including downloading the audio file, and parsing the response. The default configuration is used for all models.
+Here's some prelimary performance numbers. These numbers are for total round-trip request time, including downloading the audio file, and parsing the response. The default configuration is used for all models.
+
+More extensive benchmarks are available here:
+- https://blog.salad.com/whisper-large-v3/
+- https://blog.salad.com/distil-whisper-large-v2/
 
 **RTX 3080 Ti w/ BetterTransformers**
 
