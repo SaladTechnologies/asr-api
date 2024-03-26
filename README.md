@@ -48,11 +48,26 @@ This healthcheck will not respond until the server is fully ready to accept requ
 
 #### Request - JSON
 
-URL should be a download link to an audio file. Currently supports mp3, flac, wav, ogg. It can also be a local filepath, if the server is running on the same machine as the file.
+URL should be a download link to an audio file. It can also be a local filepath, if the server is running on the same machine as the file. 
+
+Verified extension support:
+- mp3
+- ogg
+- wav
+- webm
+- flac
+
+It may support more formats. It is using ffmpeg and Soundfile under the hood.
 
 ```json
 {
   "url": "https://example.com/audio.mp3",
+}
+```
+
+```json
+{
+  "url": "/path/to/local/audio.mp3"
 }
 ```
 
